@@ -80,7 +80,9 @@ public class QueryUtils {
         Log.i(LOG_TAG,newText);
         String bollywoodCategory = "Hindi-language_films|Indian_films";
         String hollywoodCategory = "English-language_films|American_films";
-        String s= "https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=intitle:\""+newText+"\"+incategory:";
+        String s= "https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=intitle:\""
+                +newText
+                +"\"+incategory:";
         if (category.equals("Bollywood")) {
             s = s+bollywoodCategory;
         }else{
@@ -194,5 +196,22 @@ public class QueryUtils {
                 .appendQueryParameter("action","query")
                 .appendQueryParameter("format","json");
         return builder.build().toString();
+    }
+
+    public static void getMovies(String movieId){
+        String baseUrl = "http://www.omdbapi.com/?apikey=f9cbe152&i=";
+
+        URL url = createUrl(baseUrl+movieId);
+        String JSONResponse =null;
+        JSONResponse =makeHTTPRequest(url);
+        JSONObject JsonRoot = null;
+        try {
+            JsonRoot = new JSONObject(JSONResponse);
+            String imageLink= JsonRoot.optString("Poster");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

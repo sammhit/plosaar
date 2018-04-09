@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="120dp"
+        android:layout_height="180dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/mainTitleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:layout_toEndOf="@+id/imageView"
+        android:text="Harry Potter and the deathly Hallows( Part 2)"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/plotSummaryView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/mainTitleView"
+        android:layout_below="@+id/mainTitleView"
+        android:layout_marginTop="5dp"
+        android:text="Plot : A young boy named Kubo must locate a magical suit of armour worn by his late father in order to defeat a vengeful spirit from the past."
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/genreView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/plotSummaryView"
+        android:layout_below="@+id/plotSummaryView"
+        android:layout_marginTop="5dp"
+        android:text="Genre : Animation, Adventure, Comedy, Crime, Family, Mystery"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/ratingView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/genreView"
+        android:layout_below="@+id/genreView"
+        android:layout_marginTop="12dp"
+        android:text="IMDB :4.5/10"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+</RelativeLayout>

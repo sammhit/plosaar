@@ -5,10 +5,16 @@ import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.sammhit.moviedapp.data.MovieContract;
+import com.example.sammhit.moviedapp.data.MoviesDbHelper;
+import com.example.sammhit.moviedapp.data.MovieContract.MoviesEntry;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -51,7 +57,7 @@ public class PlotActivity extends AppCompatActivity {
     ScrollView scrollView;
     RadioGroup radioGroup;
     RadioButton radioButton;
-
+    private SQLiteDatabase mDb;
 
 
     @Override
@@ -69,7 +75,16 @@ public class PlotActivity extends AppCompatActivity {
         listView.setAlpha(1);
         listView.setBackgroundColor(Color.WHITE);
         radioGroup=findViewById(R.id.radioButtonGroup);
+        MoviesDbHelper moviesDbHelper = new MoviesDbHelper(this);
+        mDb = moviesDbHelper.getWritableDatabase();
+        Cursor cursor =null;
+        String movieTitle = "";
+        cursor = mDb.rawQuery("SELECT "+ MoviesEntry.TITLE+ " FROM "+MoviesEntry.TABLE_NAME+" WHERE "+MoviesEntry.MOVIE_ID+"=?",new String[]{"tt4034228"});
+        if (cursor.getCount()>0){
+            cursor.moveToFirst();
+            movieTitle = cursor.getString(cursor.getColumnIndex(MoviesEntry.TITLE));
 
+        }
     }
 
     private class ExtractActivity extends AsyncTask<String, Void, ArrayList<String>> {
@@ -166,8 +181,6 @@ public class PlotActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 listView.setVisibility(View.VISIBLE);
-                //scrollView.setVisibility(GONE);
-
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 radioButton = findViewById(selectedId);
                 new GetJson().execute(s,radioButton.getText().toString());
@@ -184,8 +197,6 @@ public class PlotActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 new ExtractActivity().execute(plotTitle);
                 searchView.clearFocus();
-
-
             }
         });
 
