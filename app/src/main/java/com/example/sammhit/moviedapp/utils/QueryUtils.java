@@ -42,17 +42,23 @@ public class QueryUtils {
         String SAMPLE_JSON_RESPONSE = null;
         URL url = createUrl(plotUri.toString());
         SAMPLE_JSON_RESPONSE = makeHTTPRequest(url);
-        //Log.i(LOG_TAG,SAMPLE_JSON_RESPONSE);
+        Log.i(LOG_TAG,requestQuery);
+        Log.i(LOG_TAG,"Hi baby");
+        Log.i(LOG_TAG,SAMPLE_JSON_RESPONSE);
 
         try {
             JSONObject JSONroot = new JSONObject(SAMPLE_JSON_RESPONSE);
             JSONObject query = JSONroot.optJSONObject("query");
             JSONObject pages = query.optJSONObject("pages");
             Iterator keys =pages.keys();
+
             while (keys.hasNext()){
                 String currentDynamicKey = (String) keys.next();
                 JSONObject currentDynamicValue = pages.optJSONObject(currentDynamicKey);
                 extractString = currentDynamicValue.optString("extract");
+                if (extractString.equals("")){
+                    return "No such Film Please Search again..";
+                }
                 plot=extractString.split("== Plot ==")[1].split("==")[0];
             }
         } catch (JSONException e) {

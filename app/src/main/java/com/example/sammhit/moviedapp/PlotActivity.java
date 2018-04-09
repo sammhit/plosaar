@@ -22,7 +22,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -30,7 +32,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlotActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlotActivity extends AppCompatActivity {
     public final static String LOG_TAG = PlotActivity.class.getSimpleName();
     public static final int TEXT_REQUEST = 1;
     public AutoCompleteTextView searchTextView;
@@ -39,6 +41,8 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
     View view;
     ImageButton searchButton;
     ProgressBar progressBar;
+    public ListView listView;
+
 
     TextView plotTextView;
 
@@ -52,6 +56,8 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
         plotTextView = findViewById(R.id.plotTextView);
         view = findViewById(R.id.plotTextView);
         progressBar = findViewById(R.id.progressBar);
+        listView =findViewById(android.R.id.list);
+
 
 
         searchTextView.addTextChangedListener(new TextWatcher() {
@@ -83,19 +89,6 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() != R.id.searchText || view.getId() != R.id.searchButton) {
-            searchTextView.setVisibility(View.INVISIBLE);
-            searchButton.setVisibility(View.INVISIBLE);
-        }
-        if (view.getId() == R.id.searchText || view.getId() == R.id.searchButton) {
-            searchTextView.setVisibility(View.VISIBLE);
-            searchButton.setVisibility(View.VISIBLE);
-        }
     }
 
     private class ExtractActivity extends AsyncTask<String, Void, String> {
@@ -136,7 +129,8 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
             runOnUiThread(new Runnable() {
                 public void run() {
                     aAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, suggest);
-                    searchTextView.setAdapter(aAdapter);
+                    listView.setAdapter(aAdapter);
+
                     aAdapter.notifyDataSetChanged();
                 }
             });
@@ -155,7 +149,33 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
         // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this,SearchableActivity.class)));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchableActivity.class)));
+        searchView.setIconifiedByDefault(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                new ExtractActivity().execute(s);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                new GetJson().execute(s);
+                return true;
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String plotTitle = (String) adapterView.getItemAtPosition(i);
+                Log.i("Clicked", plotTitle);
+                progressBar.setVisibility(View.VISIBLE);
+                new ExtractActivity().execute(plotTitle);
+                listView.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
 
         return true;
     }

@@ -13,7 +13,8 @@ public class SearchableActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchable);
-        handleIntent(getIntent());
+        final Intent queryIntent=getIntent();
+        handleIntent(queryIntent);
     }
 
     @Override
@@ -25,13 +26,24 @@ public class SearchableActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            doMySearch(query);
+            doMySearch(intent);
+        }else if (Intent.ACTION_VIEW.equals(intent.getAction())){
+            doView(intent);
+        }else{
+            Log.i(LOG_TAG,"intent not for search");
         }
-
     }
 
-    private void doMySearch(String query) {
-        Log.i(LOG_TAG,query);
+    private void doView(Intent intent) {
+    }
+
+    private void doMySearch(Intent queryIntent) {
+        String queryString = queryIntent.getDataString();
+        if (queryString==null){
+            queryString=queryIntent.getStringExtra(SearchManager.QUERY);
+        }
+        Log.i(LOG_TAG,queryString);
+
     }
 
 }
