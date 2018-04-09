@@ -26,11 +26,6 @@ import java.util.List;
 
 public class QueryUtils {
     private static final String LOG_TAG= QueryUtils.class.getSimpleName();
-
-
-
-
-
     private QueryUtils() throws JSONException{}
     public final static String BASE_URL =buildUrl();
 
@@ -59,16 +54,10 @@ public class QueryUtils {
                 JSONObject currentDynamicValue = pages.optJSONObject(currentDynamicKey);
                 extractString = currentDynamicValue.optString("extract");
                 plot=extractString.split("== Plot ==")[1].split("==")[0];
-
-
             }
-
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return plot;
     }
 
@@ -152,8 +141,6 @@ public class QueryUtils {
             }
         }
         return jsonResponse;
-
-
     }
 
     private static String readFromInputStream(InputStream inputStream) throws IOException{

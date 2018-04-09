@@ -30,7 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlotActivity extends AppCompatActivity implements View.OnClickListener{
+public class PlotActivity extends AppCompatActivity implements View.OnClickListener {
     public final static String LOG_TAG = PlotActivity.class.getSimpleName();
     public static final int TEXT_REQUEST = 1;
     public AutoCompleteTextView searchTextView;
@@ -47,11 +47,12 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plot);
         suggest = new ArrayList<String>();
-        searchTextView =findViewById(R.id.searchText);
+        searchTextView = findViewById(R.id.searchText);
         searchButton = findViewById(R.id.searchButton);
-        plotTextView =findViewById(R.id.plotTextView);
+        plotTextView = findViewById(R.id.plotTextView);
         view = findViewById(R.id.plotTextView);
-        progressBar= findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
+
 
         searchTextView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -74,8 +75,8 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
         searchTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String plotTitle = (String)adapterView.getItemAtPosition(i);
-                Log.i("Clicked",plotTitle);
+                String plotTitle = (String) adapterView.getItemAtPosition(i);
+                Log.i("Clicked", plotTitle);
                 progressBar.setVisibility(View.VISIBLE);
                 new ExtractActivity().execute(plotTitle);
 
@@ -87,17 +88,17 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (view.getId()!=R.id.searchText || view.getId()!=R.id.searchButton){
+        if (view.getId() != R.id.searchText || view.getId() != R.id.searchButton) {
             searchTextView.setVisibility(View.INVISIBLE);
             searchButton.setVisibility(View.INVISIBLE);
         }
-        if(view.getId()==R.id.searchText || view.getId()==R.id.searchButton){
+        if (view.getId() == R.id.searchText || view.getId() == R.id.searchButton) {
             searchTextView.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
         }
     }
 
-    private class ExtractActivity extends AsyncTask<String,Void,String>{
+    private class ExtractActivity extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
@@ -112,7 +113,7 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
             //Log.i(LOG_TAG,s);
             progressBar.setVisibility(View.INVISIBLE);
             plotTextView.setText(s);
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -122,19 +123,19 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
         new ExtractActivity().execute(searchTextView.getEditableText().toString());
     }
 
-    private class GetJson extends AsyncTask<String,Void,String>{
+    private class GetJson extends AsyncTask<String, Void, String> {
 
 
         @Override
         protected String doInBackground(String... strings) {
-            String newText= strings[0];
+            String newText = strings[0];
             newText.trim();
-            newText.replace(" ","_");
-            suggest=com.example.sammhit.moviedapp.utils.QueryUtils.dynamicSuggests(newText);
+            newText.replace(" ", "_");
+            suggest = com.example.sammhit.moviedapp.utils.QueryUtils.dynamicSuggests(newText);
 
-            runOnUiThread(new Runnable(){
-                public void run(){
-                    aAdapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,suggest);
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    aAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, suggest);
                     searchTextView.setAdapter(aAdapter);
                     aAdapter.notifyDataSetChanged();
                 }
@@ -144,4 +145,18 @@ public class PlotActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the options menu from XML
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this,SearchableActivity.class)));
+
+        return true;
+    }
 }
