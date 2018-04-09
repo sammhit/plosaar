@@ -35,11 +35,9 @@ import java.util.List;
 public class PlotActivity extends AppCompatActivity {
     public final static String LOG_TAG = PlotActivity.class.getSimpleName();
     public static final int TEXT_REQUEST = 1;
-    public AutoCompleteTextView searchTextView;
     public List<String> suggest;
     public ArrayAdapter<String> aAdapter;
     View view;
-    ImageButton searchButton;
     ProgressBar progressBar;
     public ListView listView;
 
@@ -51,44 +49,10 @@ public class PlotActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plot);
         suggest = new ArrayList<String>();
-        searchTextView = findViewById(R.id.searchText);
-        searchButton = findViewById(R.id.searchButton);
         plotTextView = findViewById(R.id.plotTextView);
         view = findViewById(R.id.plotTextView);
         progressBar = findViewById(R.id.progressBar);
         listView =findViewById(android.R.id.list);
-
-
-
-        searchTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String newText = charSequence.toString();
-                new GetJson().execute(newText);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        searchTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String plotTitle = (String) adapterView.getItemAtPosition(i);
-                Log.i("Clicked", plotTitle);
-                progressBar.setVisibility(View.VISIBLE);
-                new ExtractActivity().execute(plotTitle);
-
-            }
-        });
-
     }
 
     private class ExtractActivity extends AsyncTask<String, Void, String> {
@@ -109,11 +73,6 @@ public class PlotActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-
-    public void doMysearch(View view) {
-        new ExtractActivity().execute(searchTextView.getEditableText().toString());
     }
 
     private class GetJson extends AsyncTask<String, Void, String> {
@@ -149,7 +108,7 @@ public class PlotActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
         // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchableActivity.class)));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
