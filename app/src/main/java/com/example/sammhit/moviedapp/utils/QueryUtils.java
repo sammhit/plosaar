@@ -29,7 +29,7 @@ public class QueryUtils {
     private QueryUtils() throws JSONException{}
     public final static String BASE_URL =buildUrl();
 
-    public static String extractPlot(String requestQuery) {
+    public static ArrayList<String> extractPlot(String requestQuery) {
         Uri plotUri = Uri.parse(BASE_URL)
                 .buildUpon()
                 .appendQueryParameter("prop","extracts")
@@ -37,7 +37,7 @@ public class QueryUtils {
                 .appendQueryParameter("titles",requestQuery)
                 .build();
 
-        String plot = null;
+        ArrayList<String> plot = new ArrayList<String>();
         String extractString=null;
         String SAMPLE_JSON_RESPONSE = null;
         URL url = createUrl(plotUri.toString());
@@ -51,15 +51,23 @@ public class QueryUtils {
             JSONObject query = JSONroot.optJSONObject("query");
             JSONObject pages = query.optJSONObject("pages");
             Iterator keys =pages.keys();
+            String defaultString = "We don't have a plot..";
 
-            while (keys.hasNext()){
+            while (keys.hasNext()) {
                 String currentDynamicKey = (String) keys.next();
                 JSONObject currentDynamicValue = pages.optJSONObject(currentDynamicKey);
+                String title = currentDynamicValue.optString("title");
                 extractString = currentDynamicValue.optString("extract");
-                if (extractString.equals("")){
-                    return "No such Film Please Search again..";
+                if (extractString.equals("")) {
+                    plot.add(defaultString);
+                    return plot;
                 }
-                plot=extractString.split("== Plot ==")[1].split("==")[0];
+                if (!extractString.contains("== Plot ==")){
+                    plot.add(defaultString);
+                    return plot;
+                }
+                plot.add(title);
+                plot.add(extractString.split("== Plot ==")[1].split("==")[0]);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -67,15 +75,17 @@ public class QueryUtils {
         return plot;
     }
 
-    public static List<String> dynamicSuggests(String newText){
+    public static List<String> dynamicSuggests(String newText,String category){
         List<String> suggests=new ArrayList<String>();
         Log.i(LOG_TAG,newText);
-       Uri.Builder suggestUri = Uri.parse(BASE_URL)
-                .buildUpon()
-                .appendQueryParameter("list","search")
-                .appendQueryParameter("srsearch","intitle:\""+newText+"\"incategory:Hindi-language_films|Indian_films");
-
-       String s= "https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=intitle:\""+newText+"\"+incategory:Hindi-language_films|Indian_films";
+        String bollywoodCategory = "Hindi-language_films|Indian_films";
+        String hollywoodCategory = "English-language_films|American_films";
+        String s= "https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=intitle:\""+newText+"\"+incategory:";
+        if (category.equals("Bollywood")) {
+            s = s+bollywoodCategory;
+        }else{
+            s= s+hollywoodCategory;
+        }
 
         URL mUrl = createUrl(s);
         Log.i(LOG_TAG,mUrl.toString());
