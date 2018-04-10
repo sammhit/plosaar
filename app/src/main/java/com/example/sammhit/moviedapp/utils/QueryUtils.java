@@ -1,8 +1,13 @@
 package com.example.sammhit.moviedapp.utils;
 
 import android.app.ListActivity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
+
+import com.example.sammhit.moviedapp.data.MovieContract;
+import com.example.sammhit.moviedapp.data.MoviesDbHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +33,7 @@ public class QueryUtils {
     private static final String LOG_TAG= QueryUtils.class.getSimpleName();
     private QueryUtils() throws JSONException{}
     public final static String BASE_URL =buildUrl();
+
 
     public static ArrayList<String> extractPlot(String requestQuery) {
         Uri plotUri = Uri.parse(BASE_URL)
@@ -198,19 +204,24 @@ public class QueryUtils {
         return builder.build().toString();
     }
 
-    public static void getMovies(String movieId){
+    public static ArrayList<String> getSummary(String movieId){
         String baseUrl = "http://www.omdbapi.com/?apikey=f9cbe152&i=";
-
+        ArrayList<String> JSONData=new ArrayList<>();
+        String imageUrl =null;
         URL url = createUrl(baseUrl+movieId);
         String JSONResponse =null;
         JSONResponse =makeHTTPRequest(url);
+        Log.i(LOG_TAG,JSONResponse);
         JSONObject JsonRoot = null;
         try {
             JsonRoot = new JSONObject(JSONResponse);
-            String imageLink= JsonRoot.optString("Poster");
+            JSONData.add(JsonRoot.optString("Plot"));
+            JSONData.add(JsonRoot.optString("Poster"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        return JSONData;
 
 
     }

@@ -21,7 +21,7 @@ import static com.example.sammhit.moviedapp.data.MovieContract.MoviesEntry;
 public class MoviesDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "movies.db";
-    private static final int DATABASE_VERSION =1;
+    private static final int DATABASE_VERSION =2;
     private final Context context;
 
 
@@ -35,21 +35,17 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
         InputStream inputStream=null;
         String line = "";
         try {
-            inputStream = this.context.getAssets().open("movies2016.tsv");
+            inputStream = this.context.getAssets().open("movies2017.tsv");
         } catch (IOException e) {
             e.printStackTrace();
         }
         final String SQL_CREATE_TABLE = "CREATE TABLE "+ MovieContract.MoviesEntry.TABLE_NAME + " ("
                 + MovieContract.MoviesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + MoviesEntry.MOVIE_ID+ " VARCHAR, "
                 + MovieContract.MoviesEntry.TITLE+" VARCHAR, "
                 + MovieContract.MoviesEntry.LINK+" VARCHAR, "
-                + MovieContract.MoviesEntry.TYPE+" VARCHAR, "
                 + MoviesEntry.IMDB_RATING+" VARCHAR, "
-                + MovieContract.MoviesEntry.YEAR+" VARCHAR, "
                 + MovieContract.MoviesEntry.CATEGORIES+" VARCHAR, "
-                + MovieContract.MoviesEntry.VOTES+" VARCHAR, "
-                + MovieContract.MoviesEntry.DIRECTOR+" VARCHAR"
+                + MoviesEntry.PLOT+" VARCHAR"
                 + ");";
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
@@ -57,20 +53,16 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
         try {
             while((line=br.readLine())!=null){
                 String[] columns = line.split("\\t");
-                if(columns.length!=9){
+                if(columns.length!=5){
                     Log.i("CSVParser", "Skipping Bad CSV Row");
                     continue;
                 }
                 ContentValues cv = new ContentValues();
-                cv.put(MoviesEntry.MOVIE_ID,columns[0]);
-                cv.put(MoviesEntry.TITLE,columns[1]);
-                cv.put(MoviesEntry.LINK,columns[2]);
-                cv.put(MoviesEntry.TYPE,columns[3]);
-                cv.put(MoviesEntry.IMDB_RATING,columns[4]);
-                cv.put(MoviesEntry.YEAR,columns[5]);
-                cv.put(MoviesEntry.CATEGORIES,columns[6]);
-                cv.put(MoviesEntry.VOTES,columns[7]);
-                cv.put(MoviesEntry.DIRECTOR,columns[8]);
+                cv.put(MoviesEntry.CATEGORIES,columns[0]);
+                cv.put(MoviesEntry.LINK,columns[1]);
+                cv.put(MoviesEntry.IMDB_RATING,columns[2]);
+                cv.put(MoviesEntry.PLOT,columns[3]);
+                cv.put(MoviesEntry.TITLE,columns[4]);
                 sqLiteDatabase.insert(MoviesEntry.TABLE_NAME,null,cv);
 
             }

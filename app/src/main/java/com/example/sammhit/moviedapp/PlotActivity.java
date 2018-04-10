@@ -57,7 +57,7 @@ public class PlotActivity extends AppCompatActivity {
     ScrollView scrollView;
     RadioGroup radioGroup;
     RadioButton radioButton;
-    private SQLiteDatabase mDb;
+
 
 
     @Override
@@ -75,16 +75,7 @@ public class PlotActivity extends AppCompatActivity {
         listView.setAlpha(1);
         listView.setBackgroundColor(Color.WHITE);
         radioGroup=findViewById(R.id.radioButtonGroup);
-        MoviesDbHelper moviesDbHelper = new MoviesDbHelper(this);
-        mDb = moviesDbHelper.getWritableDatabase();
-        Cursor cursor =null;
-        String movieTitle = "";
-        cursor = mDb.rawQuery("SELECT "+ MoviesEntry.TITLE+ " FROM "+MoviesEntry.TABLE_NAME+" WHERE "+MoviesEntry.MOVIE_ID+"=?",new String[]{"tt4034228"});
-        if (cursor.getCount()>0){
-            cursor.moveToFirst();
-            movieTitle = cursor.getString(cursor.getColumnIndex(MoviesEntry.TITLE));
 
-        }
     }
 
     private class ExtractActivity extends AsyncTask<String, Void, ArrayList<String>> {
