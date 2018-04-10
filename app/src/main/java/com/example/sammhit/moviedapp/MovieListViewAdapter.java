@@ -1,6 +1,7 @@
 package com.example.sammhit.moviedapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -90,11 +91,13 @@ public class MovieListViewAdapter extends RecyclerView.Adapter<MovieListViewAdap
         holder.movieTitleView.setText(movieTitleName);
         holder.plotSummaryView.setText(moviePlot);
         holder.genreView.setText(movieGenre);
-        holder.ratingView.setText(movieRating);
+        holder.ratingView.setText("IMDB:"+movieRating+"/10");
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("Item clicked", movieTitleName);
+                Intent intent = new Intent(context, PlotActivity.class);
+                intent.putExtra("chosenTitle", movieTitleName); // put image data in Intent
+                context.startActivity(intent);
             }
         });
 

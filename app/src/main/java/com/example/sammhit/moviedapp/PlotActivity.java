@@ -57,6 +57,8 @@ public class PlotActivity extends AppCompatActivity {
     ScrollView scrollView;
     RadioGroup radioGroup;
     RadioButton radioButton;
+    String titleFromListActivity=null;
+    String searchActivity=null;
 
 
 
@@ -75,7 +77,17 @@ public class PlotActivity extends AppCompatActivity {
         listView.setAlpha(1);
         listView.setBackgroundColor(Color.WHITE);
         radioGroup=findViewById(R.id.radioButtonGroup);
+        Intent intent = getIntent();
+        titleFromListActivity=intent.getStringExtra("chosenTitle");
+        searchActivity =intent.getStringExtra("Search");
+        if (titleFromListActivity!=null){
+            searchTitleAndDisplay(titleFromListActivity);
+        }
 
+    }
+
+    private void searchTitleAndDisplay(String titleFromListActivity) {
+        Log.i(LOG_TAG,titleFromListActivity);
     }
 
     private class ExtractActivity extends AsyncTask<String, Void, ArrayList<String>> {
@@ -152,6 +164,12 @@ public class PlotActivity extends AppCompatActivity {
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(true);
+        if (searchActivity!=null){
+            searchView.setFocusable(true);
+            searchView.setIconified(false);
+            searchView.requestFocusFromTouch();
+        }
+
 
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
