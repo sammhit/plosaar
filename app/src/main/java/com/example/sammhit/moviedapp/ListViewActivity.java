@@ -30,6 +30,7 @@ public class ListViewActivity extends AppCompatActivity {
     Cursor cursor;
     FloatingActionButton fab;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

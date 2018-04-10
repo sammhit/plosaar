@@ -17,6 +17,7 @@ public class MovieContract {
        // public static final String YEAR = "year";
         public static final String CATEGORIES = "genre";
         public static final String PLOT = "plot";
+        public static final String PLOTSUMMARY ="plotSummary";
 
 
         }

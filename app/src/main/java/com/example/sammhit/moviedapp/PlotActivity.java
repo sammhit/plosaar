@@ -42,6 +42,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.os.Build.ID;
 import static android.view.View.GONE;
 
 public class PlotActivity extends AppCompatActivity {
@@ -57,8 +58,11 @@ public class PlotActivity extends AppCompatActivity {
     ScrollView scrollView;
     RadioGroup radioGroup;
     RadioButton radioButton;
-    String titleFromListActivity=null;
+    Long idFromListActivity=null;
     String searchActivity=null;
+    Cursor mCursor;
+    SQLiteDatabase mDb;
+
 
 
 
@@ -78,16 +82,27 @@ public class PlotActivity extends AppCompatActivity {
         listView.setBackgroundColor(Color.WHITE);
         radioGroup=findViewById(R.id.radioButtonGroup);
         Intent intent = getIntent();
-        titleFromListActivity=intent.getStringExtra("chosenTitle");
+        idFromListActivity=intent.getLongExtra("chosenId",1);
         searchActivity =intent.getStringExtra("Search");
-        if (titleFromListActivity!=null){
-            searchTitleAndDisplay(titleFromListActivity);
+        if (idFromListActivity!=null){
+            searchTitleAndDisplay(idFromListActivity);
         }
 
     }
 
-    private void searchTitleAndDisplay(String titleFromListActivity) {
-        Log.i(LOG_TAG,titleFromListActivity);
+    private void searchTitleAndDisplay(Long idFromListActivity) {
+        Log.i(LOG_TAG, String.valueOf(idFromListActivity));
+        MoviesDbHelper moviesDbHelper= new MoviesDbHelper(getApplicationContext());
+        mDb = moviesDbHelper.getReadableDatabase();
+        mCursor = getDetails(idFromListActivity);
+        mCursor.moveToFirst();
+        String summary = mCursor.getString(mCursor.getColumnIndex(MoviesEntry.PLOTSUMMARY));
+        listView.setVisibility(GONE);
+        radioGroup.setVisibility(GONE);
+        basicTextView.setVisibility(View.GONE);
+        scrollView.setVisibility(View.VISIBLE);
+        plotTextView.setText(Html.fromHtml(summary));
+
     }
 
     private class ExtractActivity extends AsyncTask<String, Void, ArrayList<String>> {
@@ -208,8 +223,14 @@ public class PlotActivity extends AppCompatActivity {
                 searchView.clearFocus();
             }
         });
-
-
         return true;
+    }
+
+    public Cursor getDetails(Long idDb) {
+        String from[] = new String[]{MoviesEntry.PLOTSUMMARY};
+        String where = MoviesEntry._ID+"="+idDb;
+        Cursor cursor =  mDb.query(MoviesEntry.TABLE_NAME,from,where,null,null,null,null);
+
+        return cursor;
     }
 }

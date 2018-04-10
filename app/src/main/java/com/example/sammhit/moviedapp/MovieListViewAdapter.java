@@ -86,7 +86,7 @@ public class MovieListViewAdapter extends RecyclerView.Adapter<MovieListViewAdap
         String moviePlot = mCursor.getString(mCursor.getColumnIndex(MovieContract.MoviesEntry.PLOT));
         String imageLink = mCursor.getString(mCursor.getColumnIndex(MovieContract.MoviesEntry.LINK));
 
-        long id = mCursor.getLong(mCursor.getColumnIndex(MovieContract.MoviesEntry._ID));
+        final long id = mCursor.getLong(mCursor.getColumnIndex(MovieContract.MoviesEntry._ID));
         Glide.with(context).load(Uri.parse(imageLink)).into(holder.posterView);
         holder.movieTitleView.setText(movieTitleName);
         holder.plotSummaryView.setText(moviePlot);
@@ -96,7 +96,7 @@ public class MovieListViewAdapter extends RecyclerView.Adapter<MovieListViewAdap
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PlotActivity.class);
-                intent.putExtra("chosenTitle", movieTitleName); // put image data in Intent
+                intent.putExtra("chosenId", id); // put image data in Intent
                 context.startActivity(intent);
             }
         });

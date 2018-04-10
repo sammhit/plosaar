@@ -21,7 +21,7 @@ import static com.example.sammhit.moviedapp.data.MovieContract.MoviesEntry;
 public class MoviesDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "movies.db";
-    private static final int DATABASE_VERSION =2;
+    private static final int DATABASE_VERSION =3;
     private final Context context;
 
 
@@ -35,7 +35,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
         InputStream inputStream=null;
         String line = "";
         try {
-            inputStream = this.context.getAssets().open("movies2017.tsv");
+            inputStream = this.context.getAssets().open("new_movies_2017.tsv");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,7 +45,8 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 + MovieContract.MoviesEntry.LINK+" VARCHAR, "
                 + MoviesEntry.IMDB_RATING+" VARCHAR, "
                 + MovieContract.MoviesEntry.CATEGORIES+" VARCHAR, "
-                + MoviesEntry.PLOT+" VARCHAR"
+                + MoviesEntry.PLOT+" VARCHAR, "
+                + MoviesEntry.PLOTSUMMARY+" BLOB"
                 + ");";
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
@@ -53,7 +54,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
         try {
             while((line=br.readLine())!=null){
                 String[] columns = line.split("\\t");
-                if(columns.length!=5){
+                if(columns.length!=6){
                     Log.i("CSVParser", "Skipping Bad CSV Row");
                     continue;
                 }
@@ -62,7 +63,8 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 cv.put(MoviesEntry.LINK,columns[1]);
                 cv.put(MoviesEntry.IMDB_RATING,columns[2]);
                 cv.put(MoviesEntry.PLOT,columns[3]);
-                cv.put(MoviesEntry.TITLE,columns[4]);
+                cv.put(MoviesEntry.PLOTSUMMARY,columns[4]);
+                cv.put(MoviesEntry.TITLE,columns[5]);
                 sqLiteDatabase.insert(MoviesEntry.TABLE_NAME,null,cv);
 
             }
