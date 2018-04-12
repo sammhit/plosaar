@@ -1,27 +1,22 @@
-package com.example.sammhit.moviedapp;
+package movys.movysapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
-import android.view.Menu;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 
-import com.example.sammhit.moviedapp.data.MovieContract;
-import com.example.sammhit.moviedapp.data.MoviesDbHelper;
+import movys.movysapp.data.MovieContract;
+import movys.movysapp.data.MoviesDbHelper;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ListViewActivity extends AppCompatActivity {
 
@@ -29,6 +24,8 @@ public class ListViewActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     Cursor cursor;
     FloatingActionButton fab;
+    Integer[] arr = new Integer[100];
+    private AdView mAdView;
 
 
     @Override
@@ -43,8 +40,9 @@ public class ListViewActivity extends AppCompatActivity {
         MoviesDbHelper moviesDbHelper = new MoviesDbHelper(getApplicationContext());
         mDb = moviesDbHelper.getWritableDatabase();
         cursor = getAllMovies();
+        getRandArr();
 
-        MovieListViewAdapter movieListViewAdapter = new MovieListViewAdapter(ListViewActivity.this,cursor);
+        MovieListViewAdapter movieListViewAdapter = new MovieListViewAdapter(ListViewActivity.this,cursor,arr);
         recyclerView.setAdapter(movieListViewAdapter);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +54,9 @@ public class ListViewActivity extends AppCompatActivity {
             }
         });
 
+        mAdView = findViewById(R.id.adView);
+        AdRequest madRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(madRequest);
     }
 
     private Cursor getAllMovies() {
@@ -65,5 +66,28 @@ public class ListViewActivity extends AppCompatActivity {
                 null,
                 null,
                 null);
+    }
+
+    public void getRandArr() {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = i;
+        }
+        Collections.shuffle(Arrays.asList(arr));
+
+    }
+    public void onResume() {
+        super.onResume();
+        if (mAdView!= null) {
+            mAdView.resume();
+        }
+    }
+
+    /** Called before the activity is destroyed */
+    @Override
+    public void onDestroy() {
+        if (mAdView!= null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 }

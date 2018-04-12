@@ -1,18 +1,15 @@
-package com.example.sammhit.moviedapp.data;
+package movys.movysapp.data;
 
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.res.AssetManager;
+import android.content.Context;;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static com.example.sammhit.moviedapp.data.MovieContract.MoviesEntry;
+import static movys.movysapp.data.MovieContract.MoviesEntry;
 
 /**
  * Created by sammhit on 9/4/18.
@@ -55,7 +52,6 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
             while((line=br.readLine())!=null){
                 String[] columns = line.split("\\t");
                 if(columns.length!=6){
-                    Log.i("CSVParser", "Skipping Bad CSV Row");
                     continue;
                 }
                 ContentValues cv = new ContentValues();
@@ -73,7 +69,6 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
         }
         sqLiteDatabase.setTransactionSuccessful();
         sqLiteDatabase.endTransaction();
-        Log.i("SQL","Transaction Succesful");
     }
 
     @Override

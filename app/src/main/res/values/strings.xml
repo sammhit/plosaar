@@ -1,8 +1,11 @@
 <resources>
-    <string name="app_name">Movied App</string>
-    <string name="app_label">moviedApp</string>
+    <string name="app_name">MovysApp</string>
+    <string name="app_label">MovysApp</string>
     <string name="search_hint">Search Movies..</string>
     <string name="action_bar_button_search">Search</string>
     <string name="radio_bollywood">Bollywood</string>
     <string name="radio_hollywood">Hollywood</string>
+    <string name="app_id">ca-app-pub-4413278369673308~2766249162</string>
+    <string name="interstitial_full_screen">ca-app-pub-4413278369673308/3814116262</string>
+    <string name="banner_ad">ca-app-pub-4413278369673308/5951827464</string>
 </resources>

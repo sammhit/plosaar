@@ -1,18 +1,10 @@
-package com.example.sammhit.moviedapp.utils;
+package movys.movysapp.utils;
 
-import android.app.ListActivity;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+
 import android.net.Uri;
-import android.util.Log;
-
-import com.example.sammhit.moviedapp.data.MovieContract;
-import com.example.sammhit.moviedapp.data.MoviesDbHelper;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +25,6 @@ public class QueryUtils {
     private static final String LOG_TAG= QueryUtils.class.getSimpleName();
     private QueryUtils() throws JSONException{}
     public final static String BASE_URL =buildUrl();
-
-
     public static ArrayList<String> extractPlot(String requestQuery) {
         Uri plotUri = Uri.parse(BASE_URL)
                 .buildUpon()
@@ -48,9 +38,8 @@ public class QueryUtils {
         String SAMPLE_JSON_RESPONSE = null;
         URL url = createUrl(plotUri.toString());
         SAMPLE_JSON_RESPONSE = makeHTTPRequest(url);
-        Log.i(LOG_TAG,requestQuery);
-        Log.i(LOG_TAG,"Hi baby");
-        Log.i(LOG_TAG,SAMPLE_JSON_RESPONSE);
+
+
 
         try {
             JSONObject JSONroot = new JSONObject(SAMPLE_JSON_RESPONSE);
@@ -81,9 +70,10 @@ public class QueryUtils {
         return plot;
     }
 
+
+
     public static List<String> dynamicSuggests(String newText,String category){
         List<String> suggests=new ArrayList<String>();
-        Log.i(LOG_TAG,newText);
         String bollywoodCategory = "Hindi-language_films|Indian_films";
         String hollywoodCategory = "English-language_films|American_films";
         String s= "https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=intitle:\""
@@ -96,9 +86,9 @@ public class QueryUtils {
         }
 
         URL mUrl = createUrl(s);
-        Log.i(LOG_TAG,mUrl.toString());
+
         String JsonResponseTitles=makeHTTPRequest(mUrl);
-        Log.i(LOG_TAG,JsonResponseTitles);
+
         String title=null;
         try{
             JSONObject JSONroot = new JSONObject(JsonResponseTitles);
@@ -116,7 +106,6 @@ public class QueryUtils {
             for (int i=0;i<iterItems;i++){
                 JSONObject eachSearchResult = searchJson.optJSONObject(i);
                 title=eachSearchResult.optString("title");
-                Log.i(LOG_TAG,title);
                 suggests.add(title);
             }
 
@@ -145,12 +134,9 @@ public class QueryUtils {
                 inputStream = httpURLConnection.getInputStream();
                 jsonResponse = readFromInputStream(inputStream);
             }
-            else{
-                Log.e(LOG_TAG,"Error in response code:"+httpURLConnection.getResponseCode());
 
-            }
         }catch (IOException e){
-            Log.e(LOG_TAG,"Error getting message from JSON",e);
+            e.printStackTrace();
         }
         finally {
             if (httpURLConnection != null) {
@@ -211,7 +197,7 @@ public class QueryUtils {
         URL url = createUrl(baseUrl+movieId);
         String JSONResponse =null;
         JSONResponse =makeHTTPRequest(url);
-        Log.i(LOG_TAG,JSONResponse);
+
         JSONObject JsonRoot = null;
         try {
             JsonRoot = new JSONObject(JSONResponse);
